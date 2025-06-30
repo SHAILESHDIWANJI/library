@@ -4,9 +4,10 @@ import { AuthGuard } from './guards/admin-guard';
 import { AdminGuard } from './guards/auth-guard';
 import { Login } from './components/login/login';
 import { Register } from './components/register/register';
-import { Profile } from './components/profile/profile';
 import { Admin } from './components/admin/admin';
 import { Books } from './services/book';
+import { Profile } from './components/profile/profile';
+import { BooksComponent } from './components/books/books';
 
 
 export const routes: Routes = [
@@ -20,7 +21,7 @@ export const routes: Routes = [
   },
   { 
     path: 'books', 
-    component: Books,
+    component: BooksComponent,
     canActivate: [AuthGuard] 
   },
   { 
