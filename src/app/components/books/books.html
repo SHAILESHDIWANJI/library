@@ -1,0 +1,84 @@
+<div class="books-container">
+      <div class="books-header">
+        <h1>Library Books</h1>
+        
+        <div class="search-filter-container">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search</mat-label>
+            <input matInput [(ngModel)]="searchQuery" (input)="applyFilters()" placeholder="Title, Author, or ISBN">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="genre-filter">
+            <mat-label>Genre</mat-label>
+            <mat-select [(ngModel)]="selectedGenre" (selectionChange)="applyFilters()">
+              <mat-option value="all">All Genres</mat-option>
+              <mat-option *ngFor="let genre of genres" [value]="genre">{{ genre }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="loading-spinner">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <div *ngIf="!isLoading && filteredBooks.length === 0" class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <p>No books found matching your criteria</p>
+      </div>
+
+      <div class="books-grid">
+        <mat-card *ngFor="let book of displayedBooks" class="book-card">
+          <mat-card-header>
+            <mat-card-title>{{ book.title }}</mat-card-title>
+            <mat-card-subtitle>{{ book.author }}</mat-card-subtitle>
+          </mat-card-header>
+          <img mat-card-image [src]="getBookImage(book)" alt="Book cover" class="book-image">
+          <mat-card-content>
+            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            <p><strong>Genre:</strong> {{ book.genre }}</p>
+            <p><strong>Available:</strong> {{ book.availableCopies }} of {{ book.totalCopies }}</p>
+            <mat-divider></mat-divider>
+            <p class="book-description">{{ book.description || 'No description available' }}</p>
+            <mat-chip-set *ngIf="isBookBorrowed(book.id)" class="borrowed-chip">
+              <mat-chip color="primary" selected>Borrowed</mat-chip>
+            </mat-chip-set>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="primary" 
+                    (click)="toggleBookDetails(book.id)"
+                    class="details-button">
+              {{ expandedBookId === book.id ? 'Hide Details' : 'Show Details' }}
+            </button>
+            
+            <button *ngIf="!isBookBorrowed(book.id) && book.availableCopies > 0" 
+                    mat-raised-button color="accent"
+                    (click)="borrowBook(book.id)"
+                    [disabled]="!canBorrowMoreBooks()"
+                    matTooltip="{{ !canBorrowMoreBooks() ? 'You have reached your borrow limit' : '' }}">
+              Borrow
+            </button>
+
+            <button *ngIf="isBookBorrowed(book.id)" 
+                    mat-raised-button color="warn"
+                    (click)="returnBook(book.id)">
+              Return
+            </button>
+          </mat-card-actions>
+
+          <div *ngIf="expandedBookId === book.id" class="book-details">
+            <p><strong>Published:</strong> {{ book.publishedDate || 'Unknown' }}</p>
+            <p><strong>Publisher:</strong> {{ book.publisher || 'Unknown' }}</p>
+            <p><strong>Pages:</strong> {{ book.pageCount || 'Unknown' }}</p>
+          </div>
+        </mat-card>
+      </div>
+
+      <mat-paginator [length]="filteredBooks.length"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="[8, 16, 24]"
+                     (page)="onPageChange($event)"
+                     class="books-paginator">
+      </mat-paginator>
+    </div>

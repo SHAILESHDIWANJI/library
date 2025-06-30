@@ -1,0 +1,65 @@
+ <div class="dashboard-container">
+      <h1>Welcome, {{ authService.getCurrentUser()?.name }}!</h1>
+      
+      <mat-grid-list cols="2" rowHeight="200px" gutterSize="16px">
+        <mat-grid-tile>
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>library_books</mat-icon>
+              <mat-card-title>Browse Books</mat-card-title>
+              <mat-card-subtitle>View and borrow books</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-raised-button color="primary" routerLink="/books">
+                Go to Books
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>person</mat-icon>
+              <mat-card-title>My Profile</mat-card-title>
+              <mat-card-subtitle>Edit profile details</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-raised-button color="primary" routerLink="/profile">
+                View Profile
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile *ngIf="authService.isAdmin()">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>admin_panel_settings</mat-icon>
+              <mat-card-title>Admin Panel</mat-card-title>
+              <mat-card-subtitle>Manage books and users</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-raised-button color="accent" routerLink="/admin">
+                Admin Panel
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile *ngIf="!authService.isAdmin()">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>book</mat-icon>
+              <mat-card-title>My Books</mat-card-title>
+              <mat-card-subtitle>{{ borrowedBooksCount }} books borrowed</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-raised-button color="primary" routerLink="/books">
+                View My Books
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
